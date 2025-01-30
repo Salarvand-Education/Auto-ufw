@@ -19,18 +19,21 @@ install_packages() {
         apt-get update && apt-get install -y net-tools
     fi
 }
+
 # Check root
 if [[ $EUID -ne 0 ]]; then
    echo -e "${RED}This script must be run as root${NC}"
    exit 1
 fi
 
+# Install required packages
+install_packages
+
 # Function to show ports and rules
 show_ports() {
     clear
     # Create a temporary file
     temp_file=$(mktemp)
-
     echo -e "${YELLOW}Active System Ports:${NC}"
     echo "--------------------------------"
     
@@ -51,7 +54,6 @@ show_ports() {
         prog=$(echo "$line" | cut -d' ' -f2-)
         printf "Port: ${BLUE}%-6s${NC} Program: ${YELLOW}%s${NC}\n" "$port" "$prog"
     done
-
     # Show UFW rules
     echo -e "\n${YELLOW}UFW Rules:${NC}"
     echo "--------------------------------"
@@ -65,7 +67,6 @@ show_ports() {
             ((counter++))
         fi
     done
-
     # Show UFW status
     if ufw status | grep -q "Status: active"; then
         echo -e "\nFirewall Status: ${GREEN}Active${NC}"
@@ -113,7 +114,6 @@ update_ports() {
             fi
         fi
     done | sort -n | uniq > "$temp_file"
-
     # Add each unique port if not already in UFW rules
     while read -r port; do
         if ! ufw status | grep -q "$port"; then
@@ -121,7 +121,6 @@ update_ports() {
             ufw allow "$port"
         fi
     done < "$temp_file"
-
     # Clean up
     rm -f "$temp_file"
     echo -e "${GREEN}Port update complete${NC}"
@@ -163,7 +162,7 @@ while true; do
     echo -e "${YELLOW}3)${NC} Auto-Update Ports"
     echo -e "${GREEN}4)${NC} Toggle UFW (On/Off)"
     echo -e "${RED}5)${NC} Delete All Rules"
-    echo -e "${BLUE}0)${NC} Exit"
+    echo -e "${BLUE}0)${NC} Exit
     echo
     read -p "Select option: " choice
     
