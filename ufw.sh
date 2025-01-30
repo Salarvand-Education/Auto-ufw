@@ -162,7 +162,7 @@ while true; do
     echo -e "${YELLOW}3)${NC} Auto-Update Ports"
     echo -e "${GREEN}4)${NC} Toggle UFW (On/Off)"
     echo -e "${RED}5)${NC} Delete All Rules"
-    echo -e "${BLUE}0)${NC} Exit
+    echo -e "${BLUE}0)${NC} Exit"
     echo
     read -p "Select option: " choice
     
