@@ -7,6 +7,18 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
+# Function to install required packages
+install_packages() {
+    if ! command -v ufw &> /dev/null; then
+        echo -e "${YELLOW}UFW not found, installing...${NC}"
+        apt-get update && apt-get install -y ufw
+    fi
+
+    if ! command -v netstat &> /dev/null; then
+        echo -e "${YELLOW}Net-tools not found, installing...${NC}"
+        apt-get update && apt-get install -y net-tools
+    fi
+}
 # Check root
 if [[ $EUID -ne 0 ]]; then
    echo -e "${RED}This script must be run as root${NC}"
